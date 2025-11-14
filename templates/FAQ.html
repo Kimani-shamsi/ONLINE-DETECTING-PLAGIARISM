@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f6fc;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .faq-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #ddd;
+      padding: 20px 0;
+      cursor: pointer;
+    }
+
+    .faq-question {
+      font-size: 20px;
+      font-weight: 600;
+      position: relative;
+      color: #1a73e8;
+    }
+
+    .faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 0;
+      font-size: 24px;
+      color: #1a73e8;
+    }
+
+    .faq-item.active .faq-question::after {
+      content: '-';
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      font-size: 16px;
+      color: #555;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 800px; /* accommodate longer answers */
+    }
+
+    @media (max-width: 600px) {
+      .faq-question {
+        font-size: 18px;
+      }
+      .faq-answer {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="faq-container">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-question">How does the system work?</div>
+      <div class="faq-answer">
+        Our system uses advanced algorithms and artificial intelligence techniques to detect plagiarism. It analyzes the text submitted by users and compares it with a vast database of academic papers, online sources, and previously submitted documents. The system identifies similarities, highlights potential copied content, and generates a detailed report showing the matching sources. This helps users understand which parts of their work may require proper citation or rewriting.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">How can I check if my information contains plagiarism?</div>
+      <div class="faq-answer">
+        To check for plagiarism, simply upload your document in supported formats (PDF, DOCX, TXT) or paste your text directly into the input field on the platform. Once submitted, the system will scan your content and compare it against multiple sources including online publications, journals, and internal databases. Within a few moments, you will receive a plagiarism report that includes a similarity percentage and highlights any text that matches existing sources. This allows you to make necessary corrections before submission.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Is my data safe?</div>
+      <div class="faq-answer">
+        Yes, your privacy and data security are our top priorities. All uploaded documents and user data are encrypted during storage and transmission. We never share your content with third parties or use it for any purposes other than providing plagiarism checks. Additionally, our system is compliant with best practices for data protection, ensuring that sensitive information remains confidential and secure at all times.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">What makes this plagiarism checker different from others?</div>
+      <div class="faq-answer">
+        Unlike basic plagiarism tools, our system uses machine learning to understand context and semantic similarity, not just exact matches. This means it can detect paraphrased content, improper citations, and potential plagiarism more accurately. Additionally, our system provides a user-friendly report, actionable suggestions, and supports multiple document formats for seamless checking.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question">Can I use this system for multiple documents?</div>
+      <div class="faq-answer">
+        Yes, our system allows you to check multiple documents at a time. You can either upload them in bulk or individually. Each document will be analyzed, and a separate detailed report will be generated for each, making it easier to track and manage your content efficiently.
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle FAQ items open/close
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>

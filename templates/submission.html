@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Assignment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 700px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            padding: 12px 18px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .back {
+            background: #28a745;
+            margin-bottom: 15px;
+        }
+        .back:hover {
+            background: #1e7e34;
+        }
+        .response-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e9ecef;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="back" onclick="window.location.href='/dashboard'">← Back to Dashboard</button>
+
+    <h2>Submit Your Assignment</h2>
+
+    <label>Assignment Title</label>
+    <input type="text" id="title" placeholder="Enter assignment title">
+
+    <label>Assignment Text</label>
+    <textarea id="text" rows="10" placeholder="Enter your assignment here..."></textarea>
+
+    <button onclick="submitText()">Analyze Submission</button>
+
+    <div id="response" class="response-box"></div>
+</div>
+
+<script>
+function submitText() {
+    const title = document.getElementById("title").value;
+    const text = document.getElementById("text").value;
+    const responseBox = document.getElementById("response");
+
+    if (!title || !text) {
+        alert("Title and text are required!");
+        return;
+    }
+
+    fetch("/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: title, text: text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            responseBox.style.display = "block";
+            responseBox.innerHTML = "<b>Error:</b> " + data.message;
+            return;
+        }
+
+        // Show result
+        responseBox.style.display = "block";
+        responseBox.innerHTML = `
+            <h3>Analysis Complete</h3>
+            <p><b>AI Score:</b> ${data.result.ai_score}%</p>
+            <p><b>Human Score:</b> ${data.result.human_score}%</p>
+            <p><b>Prediction:</b> ${data.result.prediction}</p>
+        `;
+
+        // Redirect to Reports after 3 seconds
+        setTimeout(() => {
+            window.location.href = "/reports";
+        }, 3000);
+    })
+    .catch(err => {
+        responseBox.style.display = "block";
+        responseBox.innerHTML = "<b>Server Error:</b> " + err;
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports</title>
+</head>
+<body>
+
+<!-- Back to Dashboard Button -->
+<a href="/dashboard" style="
+    display:inline-block;
+    padding:10px 18px;
+    background:#28a745;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    font-weight:bold;
+    margin-bottom:15px;
+">
+    ← Back to Dashboard
+</a>
+
+<h2>Recent Reports</h2>
+
+<table class="reports-table">
+    <thead>
+        <tr>
+            <th>Assignment Title</th>
+            <th>AI Score</th>
+            <th>Human Score</th>
+            <th>Prediction</th>
+            <th>Submitted At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in submissions %}
+        <tr>
+            <td>{{ s.title }}</td>
+            <td>{{ (s.ai_score * 100)|round(2) }}%</td>
+            <td>{{ (s.human_score * 100)|round(2) }}%</td>
+            <td>{{ s.prediction }}</td>
+            <td>{{ s.submitted_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+
+        {% if submissions|length == 0 %}
+        <tr>
+            <td colspan="5">No submissions yet.</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<style>
+    .reports-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .reports-table th, .reports-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+    .reports-table th {
+        background-color: #f4f4f4;
+        color: #333;
+    }
+    .reports-table tr:nth-child(even) {
+        background-color: #fafafa;
+    }
+    .reports-table tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+
+</body>
+</html>

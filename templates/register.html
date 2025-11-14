@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Plagiarism Checker System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2ecc71;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .status { margin: 10px 0; text-align:center; color: #e74c3c; display:none }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Account</h2>
+        <div id="status" class="status"></div>
+        <form id="registerForm">
+            <label>Full Name</label>
+            <input id="full_name" type="text" placeholder="Enter Full Name" required>
+            <label>Email</label>
+            <input id="email" type="email" placeholder="Enter Email" required>
+            <label>Username</label>
+            <input id="username" type="text" placeholder="Choose Username" required>
+            <label>Password</label>
+            <input id="password" type="password" placeholder="Create Password" required>
+            <label>Confirm Password</label>
+            <input id="confirm_password" type="password" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+            <p>Already have an account? <a href="/login">Back to Login</a></p>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const statusDiv = document.getElementById('status');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            statusDiv.style.display = 'none';
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+
+            if (!username || !email || !password || !confirm_password) {
+                showStatus('Please complete all fields');
+                return;
+            }
+            if (password.length < 6) {
+                showStatus('Password must be at least 6 characters');
+                return;
+            }
+            if (password !== confirm_password) {
+                showStatus('Passwords do not match');
+                return;
+            }
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password, confirm_password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    // Try to auto-login the user and go to dashboard
+                    try {
+                        const loginRes = await fetch('/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({ username, password })
+                        });
+                        const loginData = await loginRes.json();
+                        if (loginRes.ok && loginData.success) {
+                            window.location.href = '/dashboard';
+                        } else {
+                            // If auto-login fails, send user to login page
+                            window.location.href = '/login';
+                        }
+                    } catch (err) {
+                        // On network error while auto-logging in, send to login page
+                        window.location.href = '/login';
+                    }
+                } else {
+                    showStatus(data.message || 'Registration failed');
+                }
+            } catch (err) {
+                showStatus('Network error: ' + err.message);
+            }
+        });
+
+        function showStatus(msg) {
+            statusDiv.textContent = msg;
+            statusDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

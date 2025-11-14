@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Plagiarism Checker System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label>Username</label>
+            <input id="username" type="text" placeholder="Enter Username" required>
+            <label>Password</label>
+            <input id="password" type="password" placeholder="Enter Password" required>
+            <button type="submit">Login</button>
+            <p>Don't have an account? <a href="/register">Register</a></p>
+            <p><a href="/reset_password">Forgot Password?</a></p>
+        </form>
+        <div id="status" style="text-align:center;color:#e74c3c;margin-top:10px;display:none"></div>
+        <script>
+            const loginForm = document.getElementById('loginForm');
+            const statusDiv = document.getElementById('status');
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                statusDiv.style.display = 'none';
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                if (!username || !password) {
+                    statusDiv.textContent = 'Please enter username and password';
+                    statusDiv.style.display = 'block';
+                    return;
+                }
+                try {
+                    const res = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({ username, password })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        window.location.href = '/dashboard';
+                    } else {
+                        statusDiv.textContent = data.message || 'Login failed';
+                        statusDiv.style.display = 'block';
+                    }
+                } catch (err) {
+                    statusDiv.textContent = 'Network error: ' + err.message;
+                    statusDiv.style.display = 'block';
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

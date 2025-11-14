@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERIFTEXT AI Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #1f1f2a;
+            --bg-card: #282836;
+            --text-light: #f0f0f0;
+            --text-mid: #a0a0b0;
+            --primary-color: #7b4fff;
+            --secondary-color: #55556a;
+            --success-color: #38c172;
+            --danger-color: #e74c3c; 
+            --warning-color: #f39c12; 
+            --spacing: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-card);
+            padding: var(--spacing);
+            position: fixed;
+            height: 100%;
+            border-right: 1px solid var(--secondary-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 0 var(--spacing) var(--spacing) var(--spacing);
+        }
+
+        .logo {
+            color: var(--text-light);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            color: var(--text-mid);
+            text-decoration: none;
+            padding: 12px 10px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 1.05em;
+        }
+
+        .nav-item i{
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing) 0;
+            border-bottom: 1px solid var(--secondary-color);
+            margin-bottom: var(--spacing);
+        }
+
+        .header-title {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .search-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box {
+            background-color: var(--bg-card);
+            border-radius: 10px;
+            padding: 8px 15px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            width: 250px;
+        }
+
+        .search-box i {
+            color: var(--text-mid);
+            margin-right: 10px;
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1em;
+            outline: none;
+            flex-grow: 1;
+        }
+
+        .notification-icon {
+            font-size: 1.3em;
+            margin-right: 15px;
+            color: var(--text-mid);
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 2px solid var(--text-light); 
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: var(--spacing);
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            padding: var(--spacing);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1em;
+            font-weight: 500;
+            color: var(--text-mid);
+            margin-bottom: 5px;
+        }
+
+        .similarity-card {
+            grid-column: 1 / 2; 
+            min-height: 250px;
+            display: grid;
+            grid-template-areas: "title" "value" "change" "metric1" "metric2";
+            gap: 15px;
+            align-content: start;
+        }
+        .similarity-card .card-title { grid-area: title; }
+        .similarity-value { grid-area: value; }
+        .similarity-change { grid-area: change; }
+        .assignments-card { grid-area: metric1; }
+        .ai-detected-card { grid-area: metric2; }
+
+        .metric-card {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            background: none; 
+            box-shadow: none;
+        }
+
+        .trend-card {
+            grid-column: 2 / 4;
+            grid-row: 1 / 2;
+        }
+
+        .reports-card {
+            grid-column: 1 / 4; 
+        }
+
+        .similarity-value {
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--danger-color);
+            line-height: 1;
+        }
+
+        .similarity-change {
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .similarity-change.up {
+            color: var(--success-color);
+        }
+        
+        /* Metric card content */
+        .metric-card .card-icon {
+            background-color: var(--secondary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+        
+        .metric-info .metric-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .metric-info .metric-label {
+            color: var(--text-mid);
+            font-size: 0.8em;
+        }
+
+        .ai-highlight {
+            color: var(--warning-color);
+        }
+
+        .trend-card .card-subtitle {
+            color: var(--text-mid);
+            font-size: 0.8em;
+            margin-bottom: 15px;
+        }
+
+        .chart-placeholder {
+            flex-grow: 1;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            border: 1px dashed var(--secondary-color);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200"><path fill="none" stroke="%233498db" stroke-width="2" d="M10 180 Q 50 100, 100 150 T 200 80 T 300 140 T 390 100" /><path fill="none" stroke="%23e74c3c" stroke-width="2" d="M10 160 Q 50 120, 100 80 T 200 130 T 300 90 T 390 150" /></svg>');
+            background-repeat: no-repeat;
+            background-size: 95% 95%;
+            background-position: center;
+        }
+
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .view-report-btn {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .view-report-btn:hover {
+            background-color: #5d39c0;
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reports-table th, .reports-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .reports-table th {
+            color: var(--text-mid);
+            font-weight: 500;
+            font-size: 0.9em;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+
+        .reports-table td {
+            border-bottom: 1px solid var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .reports-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .score-col {
+            width: 150px;
+            text-align: right !important;
+        }
+
+        .score.high {
+            color: var(--danger-color);
+        }
+        
+        .score.mid {
+            color: var(--warning-color);
+        }
+
+        .score.low {
+            color: var(--success-color);
+        }
+        
+        .score.low i {
+            margin-left: 5px;
+        }
+    
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo"><i class="fas fa-v"></i> </div>
+        <nav class="nav-menu">
+            <a href="{{ url_for('dashboard') }}" class="nav-item active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="{{ url_for('submit') }}" class="nav-item"><i class="fas fa-folder"></i> Submissions</a>
+            <a href="#" class="nav-item"><i class="fas fa-file-alt"></i> Reports</a>
+            <a href="{{ url_for('faq') }}" class="nav-item"><i class="fas fa-cog"></i> FAQ</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-title">Online Assignment Plagiarism Checker</div>
+            <div class="search-profile">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+                <i class="fas fa-bell notification-icon"></i>
+            </div>
+        </header>
+
+        <section class="dashboard-grid">
+            <!-- Similarity Card -->
+            <div class="card similarity-card">
+                <div class="card-title">Checking AI content</div>
+                <div class="similarity-value">100% Accurately</div>
+                <div class="similarity-change up"><i class="fas fa-arrow-up"></i> correct feedback</div>
+                <div class="metric-card assignments-card">
+                    <div class="card-icon"><i class="fas fa-file-export"></i></div>
+                    <div class="metric-info">
+                        <div class="metric-value">WELCOME </div>
+                        <div class="metric-label">Access your assignments in Submissions.</div>
+                    </div>
+                </div>
+                <div class="metric-card ai-detected-card">
+                    <div class="card-icon"><i class="fas fa-robot"></i></div>
+                    <div class="metric-info">
+                        <div class="metric-value ai-highlight">All</div>
+                        <div class="metric-label">AI Detected Papers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trend Card -->
+            <div class="card trend-card">
+                <div class="card-title">Submission Trend & Plagiarism Rate</div>
+                <div class="card-subtitle">Over last months</div>
+                <div class="chart-placeholder">Placeholder for Line Graph</div>
+            </div>
+
+            <!-- Reports Card -->
+            <div class="card reports-card">
+                <div class="reports-header">
+                    <div class="card-title">Recent Reports</div>
+                    <button class="view-report-btn" onclick="window.location.href='{{ url_for('reports') }}'">View All Reports</button>
+                </div>
+                <table class="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Assignment Title</th>
+                            <th class="score-col">AI Score</th>
+                            <th class="score-col">Human Score</th>
+                            <th class="score-col">Prediction</th>
+                            <th class="score-col">Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in submissions %}
+                        <tr>
+                            <td>{{ s.title }}</td>
+                            <td class="score mid">{{ (s.ai_score*100)|round(2) }}%</td>
+                            <td class="score low">{{ (s.human_score*100)|round(2) }}%</td>
+                            <td>{{ s.prediction }}</td>
+                            <td>{{ s.submitted_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if submissions|length == 0 %}
+                        <tr>
+                            <td colspan="5">No submissions yet.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+        });
+    });
+});
+</script>
+</body>
+</html>
